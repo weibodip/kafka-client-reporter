@@ -120,31 +120,35 @@ public class InfluxdbReporter implements MetricsReporter, Runnable{
 
   @Override
   public void run() {
-    BatchPoints batchPoints = BatchPoints.database(influxdbDatabase)
-        .retentionPolicy(influxdbRetentionPolicy)
-        .consistency(consistencyLevelMap.get(influxdbConsistency))
-        .tag("hostname", hostname)
-        .build();
-
-    long currentTime = System.currentTimeMillis();
-    for (KafkaMetric metric: metricList){
-      MetricName metricName = metric.metricName();
-      double value = metric.value();
-
-      //若值为无穷大，则把值转义为-1
-      if(value == Infinity || value == -Infinity){
-        value = -1;
-      }
-
-      Point point = Point.measurement(metricName.name())
-          .time(currentTime, TimeUnit.MILLISECONDS)
-          .tag("group", metricName.group())
-          .tag(metricName.tags())
-          .field("value", value)
+    try {
+      BatchPoints batchPoints = BatchPoints.database(influxdbDatabase)
+          .retentionPolicy(influxdbRetentionPolicy)
+          .consistency(consistencyLevelMap.get(influxdbConsistency))
+          .tag("hostname", hostname)
           .build();
-      batchPoints.point(point);
+
+      long currentTime = System.currentTimeMillis();
+      for (KafkaMetric metric : metricList) {
+        MetricName metricName = metric.metricName();
+        double value = metric.value();
+
+        //若值为无穷大，则把值转义为-1
+        if (value == Infinity || value == -Infinity) {
+          value = -1;
+        }
+
+        Point point = Point.measurement(metricName.name())
+            .time(currentTime, TimeUnit.MILLISECONDS)
+            .tag("group", metricName.group())
+            .tag(metricName.tags())
+            .field("value", value)
+            .build();
+        batchPoints.point(point);
+      }
+      influxDB.write(batchPoints);
+      LOGGER.debug("send {} points to influxdb", batchPoints.getPoints().size());
+    } catch (Exception e){
+      LOGGER.error("send points to influxdb failed, {}", ExceptionUtils.getStackTrace(e));
     }
-    influxDB.write(batchPoints);
-    LOGGER.debug("send {} points to influxdb", batchPoints.getPoints().size());
   }
 }
