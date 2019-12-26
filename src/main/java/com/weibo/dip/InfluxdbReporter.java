@@ -115,7 +115,7 @@ public class InfluxdbReporter implements MetricsReporter, Runnable{
     influxdbConsistency = ((Map<String, String>)configs).getOrDefault(INFLUXDB_CONSISTENCY, DEFAULT_INFLUXDB_CONSISTENCY);
     influxdbDatabase = ((Map<String, String>)configs).getOrDefault(INFLUXDB_DATABASE, DEFAULT_INFLUXDB_DATABASE);
     influxdbRetentionPolicy = ((Map<String, String>)configs).getOrDefault(INFLUXDB_RETENTION_POLICY, DEFAULT_INFLUXDB_RETENTION_POLICY);
-    interval = ((Map<String, Long>)configs).getOrDefault(INFLUXDB_REPORT_INTERVAL_SECOND, DEFAULT_INFLUXDB_REPORT_INTERVAL_SECOND);
+    interval = Long.parseLong(((Map<String, String>)configs).getOrDefault(INFLUXDB_REPORT_INTERVAL_SECOND, DEFAULT_INFLUXDB_REPORT_INTERVAL_SECOND));
   }
 
   @Override

@@ -26,7 +26,7 @@ public class InfluxdbReporterConfConstants {
   public static final String DEFAULT_INFLUXDB_RETENTION_POLICY = "autogen";
 
   public static final String INFLUXDB_REPORT_INTERVAL_SECOND = "influxdb.report.interval.second";
-  public static final long DEFAULT_INFLUXDB_REPORT_INTERVAL_SECOND = 60;
+  public static final String DEFAULT_INFLUXDB_REPORT_INTERVAL_SECOND = "60";
 
   public static final int THREAD_POOL_AWAIT_TIMEOUT = 30;
 }
