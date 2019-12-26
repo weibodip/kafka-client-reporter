@@ -145,6 +145,6 @@ public class InfluxdbReporter implements MetricsReporter, Runnable{
       batchPoints.point(point);
     }
     influxDB.write(batchPoints);
-    LOGGER.info("send {} points to influxdb", batchPoints.getPoints().size());
+    LOGGER.debug("send {} points to influxdb", batchPoints.getPoints().size());
   }
 }
