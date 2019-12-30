@@ -91,6 +91,11 @@ public class InfluxdbReporter implements MetricsReporter, Runnable{
 
   @Override
   public void close() {
+    if(executor == null){
+      LOGGER.info("executor isn't initial, can't close");
+      return;
+    }
+
     executor.shutdown();
     String name = this.getClass().getSimpleName();
     try {
